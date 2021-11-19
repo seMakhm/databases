@@ -1,25 +1,25 @@
 drop table customers cascade ;
 create table customers (
-    id integer primary key,
-    name varchar(255),
-    birth_date date
+    id integer primary key not null,
+    name varchar(255) not null,
+    birth_date date not null
 );
 drop table accounts cascade ;
 create table accounts(
-    account_id varchar(40) primary key ,
-    customer_id integer references customers(id),
-    currency varchar(3),
-    balance float,
-    "limit" float
+    account_id varchar(40) primary key not null,
+    customer_id integer references customers(id) not null,
+    currency varchar(3) not null,
+    balance float not null,
+    "limit" float not null
 );
 drop table transactions cascade ;
 create table transactions (
-    id serial primary key ,
-    date timestamp,
-    src_account varchar(40) references accounts(account_id),
-    dst_account varchar(40) references accounts(account_id),
-    amount float,
-    status varchar(20)
+    id serial primary key not null,
+    date timestamp not null,
+    src_account varchar(40) references accounts(account_id) not null,
+    dst_account varchar(40) references accounts(account_id) not null,
+    amount float not null,
+    status varchar(20) not null
 );
 
 INSERT INTO customers VALUES (201, 'John', '2021-11-05');
