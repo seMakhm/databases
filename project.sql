@@ -58,7 +58,8 @@ create table content(
     client_from int references client(id), /* чью посылку отправили */
     client_to int references client(id), /* к кому должны отправить */
     cost float,
-    time_limit date
+    time_limit date,
+    status varchar(255)
 );
 
 drop table if exists payment cascade;
@@ -135,17 +136,17 @@ insert into content_type (id, name, packaging) values (3, 'plastic materials', 1
 insert into content_type (id, name, packaging) values (4, 'glass', 3);
 insert into content_type (id, name, packaging) values (5, 'wood', 1);
 
-insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (1,'keyboard',1, 0.1, 0.01, 0.01, 11, 9, 99.99, '2021-12-03');
-insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (2 ,'Boch wineglasses',4, 0.1, 0.1, 0.1, 3, 4, 50, '2021-12-03');
-insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (3 ,'SonyTV-18924b',4, 3, 1, 2, 10, 3, 1000, '2021-12-03');
-insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (4 ,'Samsung galaxy s10', 1, 0.01, 0.01, 0.01, 9, 7, 1000, '2021-12-03');
-insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (5 ,'Apple Iphone 11', 1, 0.01, 0.01, 0.01, 9, 7, 1000,'2021-12-01');
-insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (6 ,'Ikea table', 5, 0.3, 0.3, 0.3, 6, 8, 79,'2021-12-04');
-insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (7 ,'KitchenAid coffee machine 78abc', 4, 3, 1, 2, 10, 3, 10000,'2021-12-03');
-insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (8 ,'Iron Gym horizontal bar', 4, 3, 1, 2, 10, 3, 10000,'2021-12-05');
-insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (9 ,'Zara t-short',4, 3, 1, 2, 10, 3, 10000,'2021-11-30');
-insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (10 ,'Intex inflatable pool', 2, 0.3, 0.3, 0.3, 1, 3, 1000,'2021-11-29');
-insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (11 ,'Rehau window', 4, 3, 0.4, 2, 1, 2, 500,'2021-11-30');
+insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit, status) VALUES (1,'keyboard',1, 0.1, 0.01, 0.01, 11, 9, 99.99, '2021-12-03', 'delivered');
+insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit, status) VALUES (2 ,'Boch wineglasses',4, 0.1, 0.1, 0.1, 3, 4, 50, '2021-12-03', 'delivered');
+insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit, status) VALUES (3 ,'SonyTV-18924b',4, 3, 1, 2, 10, 3, 1000, '2021-12-03', 'crashed');
+insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit, status) VALUES (4 ,'Samsung galaxy s10', 1, 0.01, 0.01, 0.01, 9, 7, 1000, '2021-12-03', 'crashed');
+insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit, status) VALUES (5 ,'Apple Iphone 11', 1, 0.01, 0.01, 0.01, 9, 7, 1000,'2021-12-01', 'delivered');
+insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit, status) VALUES (6 ,'Ikea table', 5, 0.3, 0.3, 0.3, 6, 8, 79,'2021-12-04', 'delivered');
+insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit, status) VALUES (7 ,'KitchenAid coffee machine 78abc', 4, 3, 1, 2, 10, 3, 10000,'2021-12-03', 'delivered');
+insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit, status) VALUES (8 ,'Iron Gym horizontal bar', 4, 3, 1, 2, 10, 3, 10000,'2021-12-05', 'delivered');
+insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit, status) VALUES (9 ,'Zara t-short',4, 3, 1, 2, 10, 3, 10000,'2021-11-30', 'delivered');
+insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit, status) VALUES (10 ,'Intex inflatable pool', 2, 0.3, 0.3, 0.3, 1, 3, 1000,'2021-11-29', 'delivered');
+insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit, status) VALUES (11 ,'Rehau window', 4, 3, 0.4, 2, 1, 2, 500,'2021-11-30', 'delivered');
 
 insert into payment (id, type, content, date, amount) VALUES (1,1, 1, '2021-12-01', 10);
 insert into payment (id, type, content, date, amount) VALUES (2, 1, 2, '2021-12-01', 10);
@@ -185,7 +186,7 @@ insert into place (place_type, content, date, latitude, longitude) VALUES (5, 3,
 
 /*drop view first_view_1 cascade;*/
 create view first_view_1 as
-    select co.client_from as customers /*, pa.content*/
+    select co.client_from as customers, co.id /*, pa.content*/
     from content co
         inner join place pl
             on co.id = pl.content
@@ -290,21 +291,21 @@ create view second_bill as
 
 /* drop view declaration cascade; */
 create view declaration as
-select cl.id as client_from,
-       cl1.id as client_to,
-       c.cost,
-       (p.cost + pa.amount) as total
-from content c
-inner join client cl on cl.id = c.client_from
-inner join client cl1 on cl1.id = c.client_to
-inner join street st on st.id = cl.address
-inner join city ci on st.city = ci.id
-inner join country co on ci.country = co.id
-inner join street st1 on st1.id = cl1.address
-inner join city ci1 on st1.city = ci1.id
-inner join country co1 on ci1.country = co1.id
-inner join content_type ct on c.type = ct.id
-inner join packaging p on ct.packaging = p.id
-inner join payment pa on c.id = pa.content
-where c.cost >= 500 and co.id != co1.id
-limit 9999;
+    select cl.id as client_from,
+           cl1.id as client_to,
+           c.cost,
+           (p.cost + pa.amount) as total
+    from content c
+    inner join client cl on cl.id = c.client_from
+    inner join client cl1 on cl1.id = c.client_to
+    inner join street st on st.id = cl.address
+    inner join city ci on st.city = ci.id
+    inner join country co on ci.country = co.id
+    inner join street st1 on st1.id = cl1.address
+    inner join city ci1 on st1.city = ci1.id
+    inner join country co1 on ci1.country = co1.id
+    inner join content_type ct on c.type = ct.id
+    inner join packaging p on ct.packaging = p.id
+    inner join payment pa on c.id = pa.content
+    where c.cost >= 500 and co.id != co1.id
+    limit 9999;
