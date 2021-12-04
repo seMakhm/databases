@@ -1,24 +1,24 @@
-drop table country cascade;
+drop table if exists country cascade;
 create table country(
     id int primary key,
     name varchar(255)
 );
 
-drop table city cascade ;
+drop table if exists city cascade ;
 create table city (
     id int primary key,
     name varchar(255),
     country int references country(id)
 );
 
-drop table street cascade ;
+drop table if exists street cascade ;
 create table street (
     id int primary key,
     name varchar(255),
     city int references city(id)
 );
 
-drop table client cascade;
+drop table if exists client cascade;
 create table client (
     id integer primary key,
     name varchar(255),
@@ -26,28 +26,28 @@ create table client (
     address int references street(id)
 );
 
-drop table payment_type cascade;
+drop table if exists payment_type cascade;
 create table payment_type(
     id int primary key,
     type varchar(255),
     discount float
 );
 
-drop table packaging cascade ;
+drop table if exists packaging cascade ;
 create table packaging (
 id int primary key,
 package varchar(255),
 cost float
 );
 
-drop table content_type cascade;
+drop table if exists content_type cascade;
 create table content_type(
     id int primary key,
     name varchar(255), /* что лежит в посылке (стеклянныйй предмет, электроника и тд) */
     packaging int references packaging(id)/* как нужно упаковать посылку*/
 );
 
-drop table content cascade;
+drop table if exists content cascade;
 create table content(
     id int primary key,
     name varchar(255),
@@ -61,7 +61,7 @@ create table content(
     time_limit date
 );
 
-drop table payment cascade;
+drop table if exists payment cascade;
 create table payment(
     id int primary key, /* один и тот же человек может заказать один и тот же товар */
     type int references payment_type(id), /* как оплатили */
@@ -70,7 +70,7 @@ create table payment(
     amount float /* сколько заплатили */
 );
 
-drop table place_type cascade;
+drop table if exists place_type cascade;
 create table place_type (
 id int primary key,
 type varchar(255), /* что за место (фургон, склад) */
@@ -79,7 +79,7 @@ charge float
 /* ,firm varchar(255)*/
 );
 
-drop table place cascade;
+drop table if exists place cascade;
 create table place (
 place_type int references place_type(id), /* вид транспортировки */
 content int references content(id), /* какие посылки находились в этом месте */
@@ -137,7 +137,7 @@ insert into content_type (id, name, packaging) values (5, 'wood', 1);
 
 insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (1,'keyboard',1, 0.1, 0.01, 0.01, 11, 9, 99.99, '2021-12-03');
 insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (2 ,'Boch wineglasses',4, 0.1, 0.1, 0.1, 3, 4, 50, '2021-12-03');
-insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (3 ,'SonyTV-18924b',4, 3, 1, 2, 10, 3, 10000, '2021-12-03');
+insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (3 ,'SonyTV-18924b',4, 3, 1, 2, 10, 3, 1000, '2021-12-03');
 insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (4 ,'Samsung galaxy s10', 1, 0.01, 0.01, 0.01, 9, 7, 1000, '2021-12-03');
 insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (5 ,'Apple Iphone 11', 1, 0.01, 0.01, 0.01, 9, 7, 1000,'2021-12-01');
 insert into content (id, name, type, length, wight, height, client_from, client_to, cost, time_limit) VALUES (6 ,'Ikea table', 5, 0.3, 0.3, 0.3, 6, 8, 79,'2021-12-04');
@@ -232,6 +232,7 @@ create view second_view as
         inner join payment p
             on p.content = co.id and extract(year from p.date) = 2021
     group by cl.id
+    order by amount_packages
     limit 1;
 
 /*drop view third_view cascade;*/
@@ -243,6 +244,7 @@ create view third_view as
     inner join payment p
         on c.id = p.content
     group by cl.id
+    order by amount_spent
     limit 1;
 
 /* drop view forth_view cascade; */
@@ -257,7 +259,12 @@ create view fifth_view as
 
 /* drop view first_bill cascade; */
 create view first_bill as
-    select cl.id, c.id, (pa.cost+p.amount) as total, s.name as street, ci.name as city, co.name as country from payment p
+    select cl.id as client,
+           (pa.cost+p.amount) as total,
+           s.name as street,
+           ci.name as city,
+           co.name as country
+    from payment p
     inner join content c on p.content = c.id
     inner join client cl on cl.id = c.client_from
     inner join street s on cl.address = s.id
@@ -268,12 +275,36 @@ create view first_bill as
 /*where cl.id = 1*/;
 
 /* drop view second_bill cascade; */
-select cl.id, pa.cost as for_packaging, p.amount as cost_of_shipping, (pa.cost+p.amount) as total from client cl
-inner join content c on cl.id = c.client_from
-inner join payment p on c.id = p.content
-inner join content_type ct on c.type = ct.id
-inner join packaging pa on ct.packaging = pa.id
-inner join payment_type pt on p.type = pt.id
+create view second_bill as
+    select cl.id as client,
+           pa.cost as for_packaging,
+           p.amount as cost_of_shipping,
+           (pa.cost+p.amount) as total
+    from client cl
+    inner join content c on cl.id = c.client_from
+    inner join payment p on c.id = p.content
+    inner join content_type ct on c.type = ct.id
+    inner join packaging pa on ct.packaging = pa.id
+    inner join payment_type pt on p.type = pt.id
 /*where cl.id = 1*/;
 
-/* drop view third_bill cascade; */
+/* drop view declaration cascade; */
+create view declaration as
+select cl.id as client_from,
+       cl1.id as client_to,
+       c.cost,
+       (p.cost + pa.amount) as total
+from content c
+inner join client cl on cl.id = c.client_from
+inner join client cl1 on cl1.id = c.client_to
+inner join street st on st.id = cl.address
+inner join city ci on st.city = ci.id
+inner join country co on ci.country = co.id
+inner join street st1 on st1.id = cl1.address
+inner join city ci1 on st1.city = ci1.id
+inner join country co1 on ci1.country = co1.id
+inner join content_type ct on c.type = ct.id
+inner join packaging p on ct.packaging = p.id
+inner join payment pa on c.id = pa.content
+where c.cost >= 500 and co.id != co1.id
+limit 9999;
