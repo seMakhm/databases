@@ -87,7 +87,6 @@ content int references content(id), /* какие посылки находил�
 date date, /* дата когда посылка попала сюда */
 latitude float,
 longitude float,
-time_limit date, /* до какого числа должны доставить */
 primary key (content, place_type)
 );
 /* INSERTS*/
@@ -309,3 +308,4 @@ create view declaration as
     inner join payment pa on c.id = pa.content
     where c.cost >= 500 and co.id != co1.id
     limit 9999;
+
